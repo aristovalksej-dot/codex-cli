@@ -9,7 +9,7 @@ import sys
 
 from codex_cli import __version__
 from codex_cli.agent import Agent
-from codex_cli.config import AVAILABLE_MODELS, Config
+from codex_cli.config import AVAILABLE_MODELS, CONFIG_DIR, Config
 from codex_cli.tools import create_registry
 from codex_cli.ui.console import (
     console,
@@ -99,7 +99,7 @@ def run_setup() -> None:
         config.auto_approve = False
 
     config.save()
-    print_success(f"\nConfiguration saved to {config.CONFIG_DIR}/config.yaml")
+    print_success(f"\nConfiguration saved to {CONFIG_DIR}/config.yaml")
     console.print()
 
 
