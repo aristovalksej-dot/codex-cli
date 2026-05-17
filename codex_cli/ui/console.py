@@ -62,11 +62,7 @@ def print_message(role: str, content: str) -> None:
 
 
 def print_tool_call(name: str, args_str: str) -> None:
-    console.print(f"\n  [tool_name]⚙ Tool:[/tool_name] [bold]{name}[/bold]")
-    if args_str and len(args_str) < 500:
-        console.print(f"  [dim]Args: {args_str}[/dim]")
-    elif args_str:
-        console.print(f"  [dim]Args: {args_str[:500]}...[/dim]")
+    console.print(f"\n  [tool_name]⚙[/tool_name] [bold]{name}[/bold]")
 
 
 def print_tool_result(name: str, result: str, max_lines: int = 30) -> None:
@@ -103,10 +99,7 @@ def print_warning(msg: str) -> None:
 
 
 def print_tool_approval(name: str, args_str: str) -> str:
-    console.print(f"\n  [warning]Tool requires approval:[/warning] [bold]{name}[/bold]")
-    if args_str:
-        display = args_str[:300] + ("..." if len(args_str) > 300 else "")
-        console.print(f"  [dim]{display}[/dim]")
+    console.print(f"  [warning]Requires approval:[/warning] [bold]{name}[/bold]")
     try:
         response = console.input("  [bold]Allow? (y/n/always): [/bold]").strip().lower()
     except (EOFError, KeyboardInterrupt):
