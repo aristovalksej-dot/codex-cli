@@ -5,8 +5,6 @@ from __future__ import annotations
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
-from rich.syntax import Syntax
-from rich.text import Text
 from rich.theme import Theme
 
 THEME = Theme(
@@ -54,7 +52,11 @@ def print_message(role: str, content: str) -> None:
     elif role == "assistant":
         console.print()
         md = Markdown(content)
-        console.print(Panel(md, border_style="blue", title="[bold blue]Codex[/bold blue]", padding=(0, 1)))
+        console.print(Panel(
+            md, border_style="blue",
+            title="[bold blue]Codex[/bold blue]",
+            padding=(0, 1),
+        ))
     elif role == "system":
         console.print(f"[dim]{content}[/dim]")
 

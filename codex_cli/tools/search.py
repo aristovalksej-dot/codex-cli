@@ -10,7 +10,6 @@ from typing import Any
 
 from codex_cli.tools.base import Tool
 
-
 SKIP_DIRS = {
     ".git", "node_modules", "__pycache__", ".venv", "venv",
     ".tox", "dist", "build", ".next", ".nuxt", "target",
@@ -98,7 +97,10 @@ class FindFilesTool(Tool):
         "properties": {
             "pattern": {
                 "type": "string",
-                "description": "Filename pattern with wildcards (e.g. '*.py', 'test_*', 'Dockerfile*')",
+                "description": (
+                    "Filename pattern with wildcards "
+                    "(e.g. '*.py', 'test_*', 'Dockerfile*')"
+                ),
             },
             "path": {
                 "type": "string",

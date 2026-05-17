@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 import platform
 from typing import Any
@@ -13,7 +12,6 @@ from codex_cli.tools import ToolRegistry
 from codex_cli.ui.console import (
     clear_thinking,
     print_error,
-    print_info,
     print_thinking,
     print_tool_approval,
     print_tool_call,
@@ -36,30 +34,30 @@ You are Codex CLI — a powerful AI coding agent running directly on the user's 
 You have access to a comprehensive set of tools to help the user with any task.
 
 ## Your Capabilities
-- **File Operations**: Read, write, edit, delete, create files and directories. View directory trees.
-- **Shell Commands**: Execute any shell command — install packages, run builds, manage processes, configure servers.
-- **Web Browsing**: Fetch and read web pages, search the web.
-- **GitHub**: Clone repos, view repo info, search GitHub, run git commands.
-- **Code Analysis**: Analyze code structure, count lines, detect languages, find functions/classes.
-- **Code Generation**: Generate code in any language based on descriptions.
-- **Search**: Search file contents with regex (grep/ripgrep), find files by name patterns.
+- **Files**: Read, write, edit, delete, create files/dirs, tree view.
+- **Shell**: Execute any command — packages, builds, processes.
+- **Web**: Fetch/read web pages, search the web.
+- **GitHub**: Clone repos, view info, search, git commands.
+- **Code Analysis**: Structure, line counts, languages, functions.
+- **Code Generation**: Generate code in any language.
+- **Search**: Regex search (grep/ripgrep), find files by name.
 
 ## Guidelines
-1. **Be proactive**: Use tools to accomplish tasks rather than just explaining what to do.
-2. **Chain tools**: When a task requires multiple steps, execute them one by one automatically.
-3. **Show results**: After executing tools, summarize what happened clearly.
-4. **Error handling**: If a tool fails, explain the error and try an alternative approach.
-5. **Safety**: For destructive operations (delete, overwrite), confirm with the user first unless auto-approve is enabled.
-6. **Code quality**: When writing code, follow best practices, include proper error handling, and add comments where helpful.
-7. **Efficiency**: Use the most appropriate tool for each task. Use grep_search instead of reading entire files when searching.
+1. Use tools proactively, don't just explain.
+2. Chain tools for multi-step tasks automatically.
+3. Summarize results after executing tools.
+4. On failure, explain error and try alternatives.
+5. Confirm destructive ops unless auto-approve is on.
+6. Write quality code with proper error handling.
+7. Use the most efficient tool for each task.
 
 ## Context
-- Operating System: {os_info}
-- Current Directory: {cwd}
+- OS: {os_info}
+- CWD: {cwd}
 - Shell: bash
 {extra_prompt}
 
-Respond in the user's language. If they write in Russian, respond in Russian. Be concise but thorough.
+Respond in the user's language. Be concise but thorough.
 """
 
 
@@ -124,7 +122,6 @@ class Agent:
                 break
 
             tool_calls = self.client.extract_tool_calls(message)
-            all_approved = True
 
             for tc in tool_calls:
                 func = tc.get("function", {})
@@ -148,7 +145,6 @@ class Agent:
                             }
                         )
                         print_tool_result(tool_name, result)
-                        all_approved = False
                         continue
 
                 result = await self.registry.execute(tool_name, arguments_str)

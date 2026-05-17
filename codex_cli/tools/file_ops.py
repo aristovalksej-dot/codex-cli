@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import shutil
 from pathlib import Path
 from typing import Any
@@ -50,7 +49,9 @@ class ReadFileTool(Tool):
 
 class WriteFileTool(Tool):
     name = "write_file"
-    description = "Write content to a file. Creates the file if it doesn't exist, overwrites if it does."
+    description = (
+        "Write content to a file. Creates it if missing, overwrites if exists."
+    )
     parameters: dict[str, Any] = {
         "type": "object",
         "properties": {
@@ -281,7 +282,7 @@ class TreeTool(Tool):
         self._walk(p, "", 0, max_depth, show_hidden, lines)
         if len(lines) > 500:
             lines = lines[:500]
-            lines.append(f"... (truncated, showing 500 of many entries)")
+            lines.append("... (truncated, showing 500 of many entries)")
         return "\n".join(lines)
 
     def _walk(

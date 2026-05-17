@@ -67,11 +67,19 @@ class ShellCommandTool(Tool):
 
         if stdout_text:
             if len(stdout_text) > 50000:
-                stdout_text = stdout_text[:25000] + "\n\n... [truncated] ...\n\n" + stdout_text[-25000:]
+                stdout_text = (
+                    stdout_text[:25000]
+                    + "\n\n... [truncated] ...\n\n"
+                    + stdout_text[-25000:]
+                )
             result_parts.append(f"STDOUT:\n{stdout_text}")
         if stderr_text:
             if len(stderr_text) > 20000:
-                stderr_text = stderr_text[:10000] + "\n\n... [truncated] ...\n\n" + stderr_text[-10000:]
+                stderr_text = (
+                    stderr_text[:10000]
+                    + "\n\n... [truncated] ...\n\n"
+                    + stderr_text[-10000:]
+                )
             result_parts.append(f"STDERR:\n{stderr_text}")
 
         if not stdout_text and not stderr_text:
