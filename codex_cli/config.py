@@ -9,7 +9,6 @@ from typing import Any
 
 import yaml
 
-
 CONFIG_DIR = Path.home() / ".codex-cli"
 CONFIG_FILE = CONFIG_DIR / "config.yaml"
 
@@ -43,7 +42,11 @@ class Config:
             with open(CONFIG_FILE) as f:
                 data = yaml.safe_load(f) or {}
 
-        api_key = os.environ.get("CODEX_API_KEY") or os.environ.get("CODEX_SALE_API_KEY") or data.get("api_key", "")
+        api_key = (
+            os.environ.get("CODEX_API_KEY")
+            or os.environ.get("CODEX_SALE_API_KEY")
+            or data.get("api_key", "")
+        )
         base_url = os.environ.get("CODEX_BASE_URL") or data.get("base_url", DEFAULT_BASE_URL)
         model = os.environ.get("CODEX_MODEL") or data.get("model", DEFAULT_MODEL)
 
@@ -78,7 +81,8 @@ class Config:
         errors: list[str] = []
         if not self.api_key:
             errors.append(
-                "API key not set. Use --api-key, env CODEX_API_KEY, or add to ~/.codex-cli/config.yaml"
+                "API key not set. Use --api-key, "
+                "env CODEX_API_KEY, or ~/.codex-cli/config.yaml"
             )
         if self.model not in AVAILABLE_MODELS:
             errors.append(f"Unknown model '{self.model}'. Available: {', '.join(AVAILABLE_MODELS)}")

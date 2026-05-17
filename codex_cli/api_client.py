@@ -17,6 +17,17 @@ class APIError(Exception):
         super().__init__(f"API error {status_code}: {message}")
 
 
+def _sanitize(obj: Any) -> Any:
+    """Remove surrogate characters that break UTF-8 encoding."""
+    if isinstance(obj, str):
+        return obj.encode("utf-8", errors="replace").decode("utf-8")
+    if isinstance(obj, dict):
+        return {k: _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize(v) for v in obj]
+    return obj
+
+
 class APIClient:
     def __init__(self, config: Config) -> None:
         self.config = config
@@ -46,6 +57,7 @@ class APIClient:
             payload["tools"] = tools
             payload["tool_choice"] = "auto"
 
+        payload = _sanitize(payload)
         response = await self._client.post("/chat/completions", json=payload)
         if response.status_code != 200:
             raise APIError(response.status_code, response.text)

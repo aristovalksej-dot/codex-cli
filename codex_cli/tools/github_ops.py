@@ -103,7 +103,10 @@ class GitCommandTool(Tool):
         "properties": {
             "args": {
                 "type": "string",
-                "description": "Git command arguments (e.g. 'status', 'log --oneline -10', 'diff HEAD~1')",
+                "description": (
+                    "Git arguments (e.g. 'status', "
+                    "'log --oneline -10', 'diff HEAD~1')"
+                ),
             },
             "repo_path": {
                 "type": "string",
@@ -191,7 +194,8 @@ class GitHubRepoInfoTool(Tool):
                     f"Last Updated: {data.get('updated_at', 'N/A')}",
                     f"Clone URL: {data.get('clone_url', '')}",
                     f"Homepage: {data.get('homepage', 'N/A')}",
-                    f"License: {data.get('license', {}).get('name', 'N/A') if data.get('license') else 'N/A'}",
+                    "License: "
+                    f"{data['license'].get('name', 'N/A') if data.get('license') else 'N/A'}",
                     f"Topics: {', '.join(data.get('topics', [])) or 'N/A'}",
                 ]
 

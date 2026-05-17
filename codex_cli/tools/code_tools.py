@@ -8,7 +8,6 @@ from typing import Any
 
 from codex_cli.tools.base import Tool
 
-
 LANGUAGE_EXTENSIONS = {
     ".py": "python",
     ".js": "javascript",
@@ -81,7 +80,7 @@ class AnalyzeCodeTool(Tool):
 
         lines = content.splitlines()
         total_lines = len(lines)
-        blank_lines = sum(1 for l in lines if not l.strip())
+        blank_lines = sum(1 for ln in lines if not ln.strip())
         comment_lines = 0
         for line in lines:
             stripped = line.strip()
@@ -122,7 +121,8 @@ class AnalyzeCodeTool(Tool):
             f"File: {path}",
             f"Language: {language}",
             f"Size: {path.stat().st_size:,} bytes",
-            f"Lines: {total_lines} total ({code_lines} code, {blank_lines} blank, {comment_lines} comments)",
+            f"Lines: {total_lines} total "
+            f"({code_lines} code, {blank_lines} blank, {comment_lines} comments)",
         ]
 
         if imports:
@@ -194,7 +194,10 @@ class GenerateCodeTool(Tool):
         "properties": {
             "description": {
                 "type": "string",
-                "description": "What code to generate (be specific about functionality, inputs, outputs)",
+                "description": (
+                    "What code to generate "
+                    "(be specific about functionality, inputs, outputs)"
+                ),
             },
             "language": {
                 "type": "string",

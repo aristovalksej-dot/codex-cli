@@ -6,12 +6,11 @@ import argparse
 import asyncio
 import os
 import sys
-from typing import NoReturn
 
 from codex_cli import __version__
-from codex_cli.config import AVAILABLE_MODELS, Config
-from codex_cli.tools import create_registry
 from codex_cli.agent import Agent
+from codex_cli.config import AVAILABLE_MODELS, CONFIG_DIR, Config
+from codex_cli.tools import create_registry
 from codex_cli.ui.console import (
     console,
     print_config,
@@ -87,7 +86,8 @@ def run_setup() -> None:
     for i, m in enumerate(AVAILABLE_MODELS, 1):
         marker = " (current)" if m == config.model else ""
         console.print(f"  {i}. {m}{marker}")
-    choice = console.input(f"\n[bold]Select model [1-{len(AVAILABLE_MODELS)}] (Enter to keep current): [/bold]").strip()
+    prompt_msg = f"\n[bold]Select model [1-{len(AVAILABLE_MODELS)}] (keep current): [/bold]"
+    choice = console.input(prompt_msg).strip()
     if choice.isdigit() and 1 <= int(choice) <= len(AVAILABLE_MODELS):
         config.model = AVAILABLE_MODELS[int(choice) - 1]
 
@@ -99,7 +99,7 @@ def run_setup() -> None:
         config.auto_approve = False
 
     config.save()
-    print_success(f"\nConfiguration saved to {config.CONFIG_DIR}/config.yaml")
+    print_success(f"\nConfiguration saved to {CONFIG_DIR}/config.yaml")
     console.print()
 
 
@@ -114,7 +114,8 @@ async def run_one_shot(agent: Agent, prompt: str) -> None:
 async def run_repl(agent: Agent) -> None:
     """Run the interactive REPL loop."""
     print_welcome()
-    print_info(f"Model: {agent.config.model} | Auto-approve: {'ON' if agent.auto_approve else 'OFF'}")
+    auto_str = "ON" if agent.auto_approve else "OFF"
+    print_info(f"Model: {agent.config.model} | Auto-approve: {auto_str}")
     print_info(f"Working directory: {os.getcwd()}")
     console.print()
 
@@ -249,7 +250,10 @@ def main() -> None:
     if errors:
         for err in errors:
             print_error(err)
-        console.print("\n[dim]Run 'codex --setup' to configure, or set CODEX_API_KEY env variable.[/dim]")
+        console.print(
+            "\n[dim]Run 'codex --setup' to configure, "
+            "or set CODEX_API_KEY env variable.[/dim]"
+        )
         sys.exit(1)
 
     registry = create_registry()

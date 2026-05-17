@@ -58,23 +58,30 @@ class ShellCommandTool(Tool):
         except Exception as e:
             return f"Error executing command: {e}"
 
-        result_parts: list[str] = []
-        result_parts.append(f"$ {command}")
-        result_parts.append(f"Exit code: {process.returncode}")
-
         stdout_text = stdout.decode("utf-8", errors="replace").strip()
         stderr_text = stderr.decode("utf-8", errors="replace").strip()
 
+        if len(stdout_text) > 50000:
+            stdout_text = (
+                stdout_text[:25000]
+                + "\n\n... [truncated] ...\n\n"
+                + stdout_text[-25000:]
+            )
+        if len(stderr_text) > 20000:
+            stderr_text = (
+                stderr_text[:10000]
+                + "\n\n... [truncated] ...\n\n"
+                + stderr_text[-10000:]
+            )
+
+        parts: list[str] = []
         if stdout_text:
-            if len(stdout_text) > 50000:
-                stdout_text = stdout_text[:25000] + "\n\n... [truncated] ...\n\n" + stdout_text[-25000:]
-            result_parts.append(f"STDOUT:\n{stdout_text}")
+            parts.append(stdout_text)
         if stderr_text:
-            if len(stderr_text) > 20000:
-                stderr_text = stderr_text[:10000] + "\n\n... [truncated] ...\n\n" + stderr_text[-10000:]
-            result_parts.append(f"STDERR:\n{stderr_text}")
+            parts.append(stderr_text)
+        if process.returncode != 0:
+            parts.append(f"[exit code: {process.returncode}]")
+        if not parts:
+            parts.append("(no output)")
 
-        if not stdout_text and not stderr_text:
-            result_parts.append("(no output)")
-
-        return "\n".join(result_parts)
+        return "\n".join(parts)
